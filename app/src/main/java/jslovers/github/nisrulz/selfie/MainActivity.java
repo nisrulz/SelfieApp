@@ -1,5 +1,6 @@
 package jslovers.github.nisrulz.selfie;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -45,8 +46,10 @@ public class MainActivity extends AppCompatActivity {
     myrecyclerview.addOnItemTouchListener(
         new RVHItemClickListener(this, new RVHItemClickListener.OnItemClickListener() {
           @Override public void onItemClick(View view, int position) {
-            // TODO: 7/20/16 Open the image in a details activity
-            System.out.println("List Item was clicked at " + (position + 1));
+            Intent i = new Intent(MainActivity.this, DetailActivity.class);
+            i.putExtra("path", selfieList.get(position).getPath());
+            i.putExtra("name", selfieList.get(position).getName());
+            startActivity(i);
           }
         }));
 
