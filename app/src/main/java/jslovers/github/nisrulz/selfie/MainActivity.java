@@ -4,18 +4,51 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import github.nisrulz.recyclerviewhelper.RVHItemClickListener;
+import github.nisrulz.recyclerviewhelper.RVHItemDividerDecoration;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+  RecyclerView myrecyclerview;
+  ArrayList<Selfie> selfieList;
+  SelfieListAdapter adapter;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    myrecyclerview = (RecyclerView) findViewById(R.id.rv_selfielist);
+
+    selfieList = new ArrayList<>();
+    selfieList.add(new Selfie("Selfie 1", "dummy_path"));
+    selfieList.add(new Selfie("Selfie 2", "dummy_path"));
+
+    adapter = new SelfieListAdapter(this, selfieList);
+    myrecyclerview.hasFixedSize();
+    myrecyclerview.setLayoutManager(new LinearLayoutManager(this));
+    myrecyclerview.setAdapter(adapter);
+
+    // Set the divider
+    myrecyclerview.addItemDecoration(
+        new RVHItemDividerDecoration(this, LinearLayoutManager.VERTICAL));
+
+    // Set On Click
+    myrecyclerview.addOnItemTouchListener(
+        new RVHItemClickListener(this, new RVHItemClickListener.OnItemClickListener() {
+          @Override public void onItemClick(View view, int position) {
+            // TODO: 7/20/16 Open the image in a details activity
+            System.out.println("List Item was clicked at " + (position + 1));
+          }
+        }));
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener() {
