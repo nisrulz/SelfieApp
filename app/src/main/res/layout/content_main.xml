@@ -9,6 +9,34 @@
     tools:context="jslovers.github.nisrulz.selfie.MainActivity"
     tools:showIn="@layout/activity_main"
     >
+  <LinearLayout
+      android:id="@+id/emptystate"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:orientation="vertical"
+      android:visibility="gone"
+      android:weightSum="1"
+      >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:layout_weight="0.43"
+        android:gravity="center"
+        android:text="Wow! Looks like you have not taken a selfie yet.\n Go ahead take one"
+        android:textColor="@android:color/darker_gray"
+        android:textStyle="bold"
+        />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:alpha="0.6"
+        android:src="@drawable/girl1"
+        />
+  </LinearLayout>
 
   <android.support.v7.widget.RecyclerView
       android:id="@+id/rv_selfielist"

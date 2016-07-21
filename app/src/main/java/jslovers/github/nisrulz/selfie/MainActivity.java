@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import github.nisrulz.recyclerviewhelper.RVHItemClickListener;
 import github.nisrulz.recyclerviewhelper.RVHItemDividerDecoration;
 import java.io.File;
@@ -32,11 +33,16 @@ public class MainActivity extends AppCompatActivity {
   String currentSelfiePath;
   String currentSelfieName;
 
+  LinearLayout ll_emptystate;
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    // Get the reference of empty state view
+    ll_emptystate = (LinearLayout) findViewById(R.id.emptystate);
 
     myrecyclerview = (RecyclerView) findViewById(R.id.rv_selfielist);
 
@@ -68,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         takePictureUsingIntent();
       }
     });
+
+    showEmptyStateIfListEmpty();
   }
 
   private void takePictureUsingIntent() {
@@ -109,10 +117,22 @@ public class MainActivity extends AppCompatActivity {
       Selfie selfie = new Selfie(currentSelfieName, Uri.fromFile(selfieFile).getPath());
       selfieList.add(selfie);
 
+      showEmptyStateIfListEmpty();
+
       adapter.notifyDataSetChanged();
     } else {
       File photoFile = new File(currentSelfiePath);
       photoFile.delete();
+    }
+  }
+
+  private void showEmptyStateIfListEmpty() {
+    if (ll_emptystate != null) {
+      if (selfieList != null && selfieList.size() != 0) {
+        ll_emptystate.setVisibility(View.GONE);
+      } else {
+        ll_emptystate.setVisibility(View.VISIBLE);
+      }
     }
   }
 
@@ -129,7 +149,12 @@ public class MainActivity extends AppCompatActivity {
     int id = item.getItemId();
 
     //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
+    if (id == R.id.action_deleteall) {
+      if (selfieList != null && adapter != null) {
+        selfieList.clear();
+        showEmptyStateIfListEmpty();
+        adapter.notifyDataSetChanged();
+      }
       return true;
     }
 
