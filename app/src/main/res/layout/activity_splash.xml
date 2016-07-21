@@ -13,7 +13,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_margin="20dp"
-      android:text="SelFie"
+      android:text="@string/app_name"
       android:textColor="@android:color/white"
       android:textSize="40sp"
       android:textStyle="bold|italic"
