@@ -3,18 +3,21 @@ A simple app to demonstrate building applications in android. The app lets you t
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/nisrulz.svg?style=social)](https://twitter.com/nisrulz) 
 
--
-
 # Screenshots
 
 ![sc1](https://github.com/nisrulz/SelfieApp/raw/master/img/sc1.png) ![sc2](https://github.com/nisrulz/SelfieApp/raw/master/img/sc2.png)
 
 # Pull Requests
-I welcome and encourage all pull requests. It usually will take me within 24-48 hours to respond to any issue or request.
++ I welcome and encourage all pull requests. 
++ It usually will take me within 24-48 hours to respond to any issue or request.
 
 
 ### Created & Maintained By
 [Nishant Srivastava](https://github.com/nisrulz) ([@nisrulz](https://www.twitter.com/nisrulz))
+
+### Credits
+Graphics used in the app are taken from [freepik.com](http://www.freepik.com)
+
 
 License
 =======
