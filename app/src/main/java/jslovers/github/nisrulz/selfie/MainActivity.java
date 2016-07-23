@@ -105,14 +105,6 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
-  private void galleryAddPic(String filePath) {
-    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-    File f = new File(filePath);
-    Uri contentUri = Uri.fromFile(f);
-    mediaScanIntent.setData(contentUri);
-    sendBroadcast(mediaScanIntent);
-  }
-
   private String getFileName() {
     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
     String imageFileName = "SelFie_" + timeStamp + "_";
@@ -127,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
       // Use `getExternalFilesDir` on Context to access package-specific directories.
       // This way, we don't need to request external read/write runtime permissions.
       File mediaStorageDir =
-          new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "SelFie");
+          new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+              "SelFie");
 
       // Create the storage directory if it does not exist
       if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
@@ -137,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
       // Return the file target for the photo based on filename
       File newFile = new File(mediaStorageDir.getPath() + File.separator + fileName);
       currentPhotoPath = newFile.getPath();
-      galleryAddPic(currentPhotoPath);
       return Uri.fromFile(newFile);
     }
     return null;
