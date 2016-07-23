@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
   private String getFileName() {
     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-    String imageFileName = "JPEG_" + timeStamp + "_";
+    String imageFileName = "SelFie_" + timeStamp + "_";
     return imageFileName;
   }
 
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
       // Use `getExternalFilesDir` on Context to access package-specific directories.
       // This way, we don't need to request external read/write runtime permissions.
       File mediaStorageDir =
-          new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "SelFie");
+          new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "SelFie");
 
       // Create the storage directory if it does not exist
       if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
