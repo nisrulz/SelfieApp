@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import github.nisrulz.recyclerviewhelper.RVHItemClickListener;
 import github.nisrulz.recyclerviewhelper.RVHItemDividerDecoration;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,10 +29,10 @@ public class MainActivity extends AppCompatActivity {
   ArrayList<Selfie> selfieList;
   SelfieListAdapter adapter;
 
-  String currentSelfiePath;
-  String currentSelfieName;
-
   LinearLayout ll_emptystate;
+
+  String currentPhotoPath;
+  String currentPhotoName;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -79,53 +78,78 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void takePictureUsingIntent() {
-    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    // Ensure that there's a camera activity to handle the intent
-    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-      // Create the File where the photo should go
-      File photoFile = null;
-      try {
-        photoFile = createImageFile();
-      } catch (IOException ex) {
-        // Error occurred while creating the File
-      }
+    currentPhotoName = getFileName();
 
-      // Continue only if the File was successfully created
-      if (photoFile != null) {
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-      }
+    // create Intent to take a picture and return control to the calling application
+    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    intent.putExtra(MediaStore.EXTRA_OUTPUT,
+        getPhotoFileUri(currentPhotoName)); // set the image file name
+
+    // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+    // So as long as the result is not null, it's safe to use the intent.
+    if (intent.resolveActivity(getPackageManager()) != null) {
+      // Start the image capture intent to take photo
+      startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
   }
 
-  private File createImageFile() throws IOException {
-    // Create an image file name
-    currentSelfieName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-    File imageFile = File.createTempFile(currentSelfieName, ".jpg", getExternalFilesDir(null));
-    currentSelfiePath = imageFile.getAbsolutePath();
-    return imageFile;
-  }
-
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
     if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
-      File photoFile = new File(currentSelfiePath);
-      File selfieFile =
-          new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), currentSelfieName + ".jpg");
-      photoFile.renameTo(selfieFile);
-
-      Selfie selfie = new Selfie(currentSelfieName, Uri.fromFile(selfieFile).getPath());
+      Selfie selfie = new Selfie(currentPhotoName, currentPhotoPath);
       selfieList.add(selfie);
 
       showEmptyStateIfListEmpty();
 
       adapter.notifyDataSetChanged();
-    } else {
-      File photoFile = new File(currentSelfiePath);
-      photoFile.delete();
     }
   }
 
+  private void galleryAddPic(String filePath) {
+    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+    File f = new File(filePath);
+    Uri contentUri = Uri.fromFile(f);
+    mediaScanIntent.setData(contentUri);
+    sendBroadcast(mediaScanIntent);
+  }
+
+  private String getFileName() {
+    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    String imageFileName = "JPEG_" + timeStamp + "_";
+    return imageFileName;
+  }
+
+  // Returns the Uri for a photo stored on disk given the fileName
+  public Uri getPhotoFileUri(String fileName) {
+    // Only continue if the SD Card is mounted
+    if (isExternalStorageAvailable()) {
+      // Get safe storage directory for photos
+      // Use `getExternalFilesDir` on Context to access package-specific directories.
+      // This way, we don't need to request external read/write runtime permissions.
+      File mediaStorageDir =
+          new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "SelFie");
+
+      // Create the storage directory if it does not exist
+      if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
+        System.out.println("failed to create directory");
+      }
+
+      // Return the file target for the photo based on filename
+      File newFile = new File(mediaStorageDir.getPath() + File.separator + fileName);
+      currentPhotoPath = newFile.getPath();
+      galleryAddPic(currentPhotoPath);
+      return Uri.fromFile(newFile);
+    }
+    return null;
+  }
+
+  // Returns true if external storage for photos is available
+  private boolean isExternalStorageAvailable() {
+    String state = Environment.getExternalStorageState();
+    return state.equals(Environment.MEDIA_MOUNTED);
+  }
+
+  // Setup empty state function
   private void showEmptyStateIfListEmpty() {
     if (ll_emptystate != null) {
       if (selfieList != null && selfieList.size() != 0) {
@@ -135,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
       }
     }
   }
+
+  // Options Menu
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.

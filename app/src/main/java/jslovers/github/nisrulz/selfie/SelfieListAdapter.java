@@ -1,6 +1,8 @@
 package jslovers.github.nisrulz.selfie;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,8 +35,8 @@ public class SelfieListAdapter extends RecyclerView.Adapter<SelfieListAdapter.It
     holder.txtvw_name.setText(selfieList.get(position).getName());
 
     // Set the image in the holder using the helper
-    ImageHelper.setImageFromFilePath(context, selfieList.get(position).getPath(),
-        holder.imgvw_selfie);
+    Bitmap takenImage = BitmapFactory.decodeFile(selfieList.get(position).getPath());
+    holder.imgvw_selfie.setImageBitmap(takenImage);
   }
 
   @Override public int getItemCount() {

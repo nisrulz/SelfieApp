@@ -1,5 +1,6 @@
 package jslovers.github.nisrulz.selfie;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -18,7 +19,7 @@ public class DetailActivity extends AppCompatActivity {
     ImageView imgvw_details = (ImageView) findViewById(R.id.imgvw_selfie_detail);
 
     // Set image in imageview
-    ImageHelper.setImageFromFilePath(this, imagepath, imgvw_details);
+    imgvw_details.setImageBitmap(BitmapFactory.decodeFile(imagepath));
     // Set title of the activity
     getSupportActionBar().setTitle(name);
   }
